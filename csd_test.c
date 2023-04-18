@@ -361,7 +361,7 @@ void Func1_Process_10msTimer(void)
 			//else if (tCallerModem.ucModemState == MODEM_INITSENT_STATE)
 			else if (ONLINE_DATA == tCallerModem.status.ModemState)
 			{
-				//���Է������ݡ�
+				// able to send data 
 				dwDteBufBusyNum = getUBRingBusyNodesNum(&tCallerDteTxBuf);
 				if (LenT>= dwDteBufBusyNum)
 				{
@@ -374,7 +374,7 @@ void Func1_Process_10msTimer(void)
 			}
 		}
 
-		//���������Ҫ���ͣ��������ݸ�modem        
+		// if there are data to send, send the data to modem       
 		DTE_Transmit(&tCallerModem.ModemData[0], DTE_TX_Buf, SendLen);       
 		if (SendLen > 0)
 		{
@@ -382,11 +382,11 @@ void Func1_Process_10msTimer(void)
             //csdDspSendWcsIpPkt2Host(DTE_TX_Buf_Dbg, DTE_TX_Buf_Dbg_Len, 0);
 		}
 		
-		//����PCM���ݣ�������û�����
+		// receive PCM data, which is user function
 		memset(tCallerModem.CallerPingPCMRecv, 0x54, sizeof(tCallerModem.CallerPingPCMRecv));
-		readLen =  readSWRingBuf(&tCallerModem.CallerPingPCMRecv[0], tCallerModem.status.BufferSize, &tCalledTxBuf);
+		readLen = readSWRingBuf(&tCallerModem.CallerPingPCMRecv[0], tCallerModem.status.BufferSize, &tCalledTxBuf);
         
-        //�ӱ��з������������У�ȡ��PCM���ݡ�
+        // receive the PCM data from data the called sent. 
 		if (readLen < tCallerModem.status.BufferSize)
 		{
 			int i;
@@ -398,11 +398,11 @@ void Func1_Process_10msTimer(void)
 			}
 			//printf("#######���н��ղ���\r\n");
 		}
-		//����modem����������PCM����
+		//调用modem函数，处理PCM数据
 		ModemMain(&tCallerModem.ModemData[0], &(tCallerModem.CallerPingPCMRecv[0]), &(tCallerModem.CallerPingPCMSend[0]));
 		writeSWRingBuf(&tCallerModem.CallerPingPCMSend[0], tCallerModem.status.BufferSize, &tCallerTxBuf);						//������PCM���ݣ��ŵ����еĻ��λ����С�
 
-		//��modem�������ݣ�����Ҳ������128�����ֵ
+		// 从modem接受数据，长度也可以是128以外的值
 		LenRecv = DTE_Receive(&tCallerModem.ModemData[0], DTE_RX_Buf, 128);
 
 		if (LenRecv != 0)
@@ -410,7 +410,7 @@ void Func1_Process_10msTimer(void)
 			printf("caller recv: %s\r\n", DTE_RX_Buf);     
 		}
 
-		//��ȡmodem״̬
+		// get the status of modem
 		Modem_StatusChange(&tCallerModem.ModemData[0], &tCallerModem.status);
 		if (tCallerModem.status.ModemState == ONLINE_DATA)
 		{
@@ -423,7 +423,7 @@ void Func1_Process_10msTimer(void)
 			callerState = tCallerModem.status.ModemState;
 		}
 		
-		//����PCM���ݣ�������û�����
+		// sending PCM data, this is user function
 		//PCM_Transmit(PCM_TX_Buf);
 		
 		if (tCallerModem.status.StateChange)
