@@ -1,20 +1,19 @@
 {
     "version": "2.0.0",
     "tasks": [
-        {
-            "label": "build",
-            "type": "shell",
-            "command": "gcc",
-            "args": [
-                "csd_test.c",
-                "-o",
-                "EXE",
-                "gaomodem.a"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            }
-        }
+      {
+        "label": "build",
+        "type": "shell",
+        "command": "gcc",
+        "args": [
+          "-g",
+          "csd_test.c",
+          "-o",
+          "EXE",
+          "gaomodem.a"
+        ],
+        "group": "build"
+      }
     ]
-}
+  }
+  

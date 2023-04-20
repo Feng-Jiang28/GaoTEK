@@ -40,44 +40,44 @@ void initSWRingBuf(T_SWRingBuf *ptSWRingBuf)
 	memset(&(ptSWRingBuf->buf[0]), 0, SWRING_BUF_SIZE*sizeof(SWORD));
 }
 
-//��β��д�룬��ͷ��������β��Ϊ��
+//从尾部写入，从头部读出，尾巴为空
 UDWORD writeSWRingBuf(SWORD *pswInput, UDWORD len, T_SWRingBuf *ptSWRingBuf)
 {
 	UDWORD		freeNodeNum = 0;
 	UDWORD     busyNodeNum = 0;
 	UDWORD		loop;
 	
-	//���п���
+	//队列空闲
 	if (ptSWRingBuf->intBufHead == ptSWRingBuf->intBufTail)
 	{
 		freeNodeNum = SWRING_BUF_SIZE - 1;
 	}
 
-	//β��
+	//尾大
 	if (ptSWRingBuf->intBufHead < ptSWRingBuf->intBufTail)
 	{
 		busyNodeNum = ptSWRingBuf->intBufTail - ptSWRingBuf->intBufHead;
 		freeNodeNum = SWRING_BUF_SIZE - 1 - busyNodeNum;
 	}
 
-	//ͷ��
+	//头大
 	if (ptSWRingBuf->intBufHead > ptSWRingBuf->intBufTail)
 	{
 		freeNodeNum = ptSWRingBuf->intBufHead - ptSWRingBuf->intBufTail - 1;
 	}
 
-	if (freeNodeNum >= len)															//�ռ��㹻
+	if (freeNodeNum >= len)															//空间足够
 	{
 		for (loop=0; loop<len; loop++)
 		{
 			ptSWRingBuf->buf[ptSWRingBuf->intBufTail] = pswInput[loop];
 			ptSWRingBuf->intBufTail = (ptSWRingBuf->intBufTail+1)%SWRING_BUF_SIZE;
 		}
-		return 0;																		//�ɹ�
+		return 0;																		//成功
 	}
 	else
 	{
-		return 1;																		//ʧ��
+		return 1;																		//失败
 	}
 }
 
@@ -90,21 +90,21 @@ UDWORD readSWRingBuf(SWORD *pswOutput, UDWORD len, T_SWRingBuf *ptSWRingBuf)
 	UDWORD     	copyNodeNum = 0;
 	UDWORD		loop;
 	
-	//���п���
+	//队列空闲
 	if (ptSWRingBuf->intBufHead == ptSWRingBuf->intBufTail)
 	{
 		freeNodeNum = SWRING_BUF_SIZE - 1;
 		busyNodeNum = 0;
 	}
 
-	//β��
+	//尾大
 	if (ptSWRingBuf->intBufHead < ptSWRingBuf->intBufTail)
 	{
 		busyNodeNum = ptSWRingBuf->intBufTail - ptSWRingBuf->intBufHead;
 		freeNodeNum = SWRING_BUF_SIZE - 1 - busyNodeNum;
 	}
 
-	//ͷ��
+	//头大
 	if (ptSWRingBuf->intBufHead > ptSWRingBuf->intBufTail)
 	{
 		freeNodeNum = ptSWRingBuf->intBufHead - ptSWRingBuf->intBufTail - 1;
@@ -141,37 +141,37 @@ UDWORD writeUBRingBuf(UBYTE *pubInput, UDWORD len, T_UBRingBuf *ptUBRingBuf)
 	UDWORD     	busyNodeNum = 0;
 	UDWORD		loop;
 	
-	//���п���
+	//队列空闲
 	if (ptUBRingBuf->intBufHead == ptUBRingBuf->intBufTail)
 	{
 		freeNodeNum = UBRING_BUF_SIZE - 1;
 	}
 
-	//β��
+	//尾大
 	if (ptUBRingBuf->intBufHead < ptUBRingBuf->intBufTail)
 	{
 		busyNodeNum = ptUBRingBuf->intBufTail - ptUBRingBuf->intBufHead;
 		freeNodeNum = UBRING_BUF_SIZE - 1 - busyNodeNum;
 	}
 
-	//ͷ��
+	//头大
 	if (ptUBRingBuf->intBufHead > ptUBRingBuf->intBufTail)
 	{
 		freeNodeNum = ptUBRingBuf->intBufHead - ptUBRingBuf->intBufTail - 1;
 	}
 
-	if (freeNodeNum >= len)															//�ռ��㹻
+	if (freeNodeNum >= len)															//空间足够
 	{
 		for (loop=0; loop<len; loop++)
 		{
 			ptUBRingBuf->buf[ptUBRingBuf->intBufTail] = pubInput[loop];
 			ptUBRingBuf->intBufTail = (ptUBRingBuf->intBufTail+1)%UBRING_BUF_SIZE;
 		}
-		return 0;																		//�ɹ�
+		return 0;																		//成功
 	}
 	else
 	{
-		return 1;																		//ʧ��
+		return 1;																		//失败
 	}
 }
 
@@ -181,21 +181,21 @@ UDWORD getUBRingBusyNodesNum(T_UBRingBuf *ptUBRingBuf)
 	UDWORD		freeNodeNum = 0;
 	UDWORD     	busyNodeNum = 0;
 
-	//���п���
+	//队列空闲
 	if (ptUBRingBuf->intBufHead == ptUBRingBuf->intBufTail)
 	{
 		freeNodeNum = UBRING_BUF_SIZE - 1;
 		busyNodeNum = 0;
 	}
 
-	//β��
+	//尾大
 	if (ptUBRingBuf->intBufHead < ptUBRingBuf->intBufTail)
 	{
 		busyNodeNum = ptUBRingBuf->intBufTail - ptUBRingBuf->intBufHead;
 		freeNodeNum = UBRING_BUF_SIZE - 1 - busyNodeNum;
 	}
 
-	//ͷ��
+	//头大
 	if (ptUBRingBuf->intBufHead > ptUBRingBuf->intBufTail)
 	{
 		freeNodeNum = ptUBRingBuf->intBufHead - ptUBRingBuf->intBufTail - 1;
@@ -214,21 +214,21 @@ UDWORD readUBRingBuf(UBYTE *pubOutput, UDWORD len, T_UBRingBuf *ptUBRingBuf)
 	UDWORD     	copyNodeNum = 0;
 	UDWORD		loop;
 	
-	//���п���
+	//队列空闲
 	if (ptUBRingBuf->intBufHead == ptUBRingBuf->intBufTail)
 	{
 		freeNodeNum = UBRING_BUF_SIZE - 1;
 		busyNodeNum = 0;
 	}
 
-	//β��
+	//尾大
 	if (ptUBRingBuf->intBufHead < ptUBRingBuf->intBufTail)
 	{
 		busyNodeNum = ptUBRingBuf->intBufTail - ptUBRingBuf->intBufHead;
 		freeNodeNum = UBRING_BUF_SIZE - 1 - busyNodeNum;
 	}
 
-	//ͷ��
+	//头大
 	if (ptUBRingBuf->intBufHead > ptUBRingBuf->intBufTail)
 	{
 		freeNodeNum = ptUBRingBuf->intBufHead - ptUBRingBuf->intBufTail - 1;
@@ -257,7 +257,7 @@ UDWORD readUBRingBuf(UBYTE *pubOutput, UDWORD len, T_UBRingBuf *ptUBRingBuf)
 void initTestModem(void)
 {
 	
-	//����modem��ʼ��
+	//主叫modem初始化
 	ModemInit(&tCallerModem.ModemData[0]);
 	ModemStateInit(&tCallerModem.status);
 	tCallerModem.ucModemState = MODEM_INIT_STATE;
@@ -267,7 +267,7 @@ void initTestModem(void)
 	memset(tCallerModem.CallerPongPCMRecv, 0, sizeof(tCallerModem.CallerPongPCMRecv));
 
 
-	//����modem��ʼ��
+	//被叫modem初始化
 	ModemInit(&tCalledModem.ModemData[0]);
 	ModemStateInit(&tCalledModem.status);
 	tCalledModem.ucModemState = MODEM_INIT_STATE;
@@ -363,7 +363,7 @@ void Func1_Process_10msTimer(void)
 			{
 				// able to send data 
 				dwDteBufBusyNum = getUBRingBusyNodesNum(&tCallerDteTxBuf);
-				if (LenT>= dwDteBufBusyNum)
+				if (LenT >= dwDteBufBusyNum)
 				{
 					SendLen = readUBRingBuf(DTE_TX_Buf, dwDteBufBusyNum, &tCallerDteTxBuf);
 				}
@@ -396,11 +396,12 @@ void Func1_Process_10msTimer(void)
 			{
 				tCallerModem.CallerPingPCMRecv[readLen+i] = 0;				//swdLINE1300BUF[i];
 			}
-			//printf("#######���н��ղ���\r\n");
+			
 		}
 		//调用modem函数，处理PCM数据
 		ModemMain(&tCallerModem.ModemData[0], &(tCallerModem.CallerPingPCMRecv[0]), &(tCallerModem.CallerPingPCMSend[0]));
-		writeSWRingBuf(&tCallerModem.CallerPingPCMSend[0], tCallerModem.status.BufferSize, &tCallerTxBuf);						//������PCM���ݣ��ŵ����еĻ��λ����С�
+		writeSWRingBuf(&tCallerModem.CallerPingPCMSend[0], tCallerModem.status.BufferSize, &tCallerTxBuf);		
+		//产生的PCM数据，放到主叫的环形缓冲中。
 
 		// 从modem接受数据，长度也可以是128以外的值
 		LenRecv = DTE_Receive(&tCallerModem.ModemData[0], DTE_RX_Buf, 128);
@@ -440,7 +441,7 @@ void Func1_Process_10msTimer(void)
 		}
 	}
 
-	//����ͨ��B������
+	//处理通道B，被叫
 	if (1)
 	{
 		int LenT = 0;
@@ -456,7 +457,7 @@ void Func1_Process_10msTimer(void)
 		memset(DTE_TX_Buf,0,sizeof(DTE_TX_Buf));
 		memset(DTE_RX_Buf,0,sizeof(DTE_RX_Buf));     
 
-		//���modem���廹�ж��ٿ��࣬�����ڽ���DTE�����ݡ�
+		//检查modem缓冲还有多少空余，可用于接收DTE的数据。
 		LenT = CheckTxBuf(&tCalledModem.ModemData[0]);
        
 		if (1)
@@ -464,7 +465,7 @@ void Func1_Process_10msTimer(void)
 			/* Get Len (<= LenT) bytes data here for transmit in customer application */
 			/* data stored in DTE_TX_Buf, */
 			
-			//��ʼ������δ����
+			//初始化命令未发送
             if(OFF_LINE == tCalledModem.status.ModemState)
 			{
 				char ucATInit[]={"ATZE1X3+M=8\r"};     /*V34*/
@@ -475,13 +476,13 @@ void Func1_Process_10msTimer(void)
 				static int ATZSend = 0;
 				static int ATASend = 0;
 				
-				if ((LenT>=strlen(ucATInit)) && (Flag100ms==1) && (ATZSend == 0))						//100msʱ����
+				if ((LenT>=strlen(ucATInit)) && (Flag100ms==1) && (ATZSend == 0))						//100ms时发送
 				{
 					ATZSend = 1;
 					memcpy(&DTE_TX_Buf[0], &ucATInit[0], strlen(ucATInit));
 					SendLen = strlen(ucATInit);
 				}
-				if ((LenT>=strlen(ucATA)) && (Flag100ms==20) && (ATASend == 0))							//200msʱ����
+				if ((LenT>=strlen(ucATA)) && (Flag100ms==20) && (ATASend == 0))							//200ms时发送
 				{
 					ATASend = 1;
 					memcpy(&DTE_TX_Buf[0], &ucATA[0], strlen(ucATA));
@@ -491,7 +492,7 @@ void Func1_Process_10msTimer(void)
 			}
 			else if (ONLINE_DATA == tCalledModem.status.ModemState)
 			{
-				//���Է������ݡ�
+				//可以发送数据。
 				dwDteBufBusyNum = getUBRingBusyNodesNum(&tCalledDteTxBuf);
 				if (LenT>= dwDteBufBusyNum)
 				{
@@ -504,7 +505,7 @@ void Func1_Process_10msTimer(void)
 			}
 		}
         
-		//���������Ҫ���ͣ��������ݸ�modem
+		//如果有数据要发送，则发送数据给modem
 		DTE_Transmit(&tCalledModem.ModemData[0], DTE_TX_Buf, SendLen);
         
 		if (SendLen > 0)
@@ -512,11 +513,11 @@ void Func1_Process_10msTimer(void)
 			printf("called send: %s\r\n", DTE_TX_Buf);      
 		}
 		
-		//����PCM���ݣ�������û�����
+		//接收PCM数据，这个是用户函数
 		memset(tCalledModem.CalledPingPCMRecv, 0x54, sizeof(tCalledModem.CalledPingPCMRecv));
 		readLen = readSWRingBuf(&tCalledModem.CalledPingPCMRecv[0], tCalledModem.status.BufferSize, &tCallerTxBuf);	
         
-        //�����з������������У�ȡ��PCM���ݡ�
+        //从主叫发出来的数据中，取得PCM数据。
 		if (readLen < tCalledModem.status.BufferSize)
 		{
 			int i;
@@ -526,13 +527,13 @@ void Func1_Process_10msTimer(void)
 			{
 				tCalledModem.CalledPingPCMRecv[readLen+i] = 0;				//swdLINE1300BUF[i];
 			}
-			//printf("#######���н��ղ���\r\n");
+			//printf("#######被叫接收补偿\r\n");
 		}
-		//����modem����������PCM����
+		//调用modem函数，处理PCM数据
 		ModemMain(&tCalledModem.ModemData[0], &(tCalledModem.CalledPingPCMRecv[0]), &(tCalledModem.CalledPingPCMSend[0]));
-		writeSWRingBuf(&tCalledModem.CalledPingPCMSend[0], tCalledModem.status.BufferSize, &tCalledTxBuf);						//������PCM���ݣ��ŵ����еĻ��λ����С�
+		writeSWRingBuf(&tCalledModem.CalledPingPCMSend[0], tCalledModem.status.BufferSize, &tCalledTxBuf);						//产生的PCM数据，放到被叫的环形缓冲中。
 
-		//��modem�������ݣ�����Ҳ������128�����ֵ
+		//从modem接收数据，长度也可以是128以外的值
 		LenRecv = DTE_Receive(&tCalledModem.ModemData[0], DTE_RX_Buf, 128);
 
 		if (LenRecv != 0)
@@ -540,7 +541,7 @@ void Func1_Process_10msTimer(void)
 			printf("called recv: %s\r\n", DTE_RX_Buf);     
 		}
 
-		//��ȡmodem״̬
+		//获取modem状态
 		Modem_StatusChange(&tCalledModem.ModemData[0], &tCalledModem.status);
 		if (tCalledModem.status.ModemState == ONLINE_DATA)
 		{
@@ -554,16 +555,16 @@ void Func1_Process_10msTimer(void)
 		}
 		//printf("@@@called buffersize=%d\r\n", tCalledModem.status.BufferSize);
 
-		//����PCM���ݣ�������û�����
+		//发送PCM数据，这个是用户函数
 		//PCM_Transmit(PCM_TX_Buf);
 		
 		if (tCalledModem.status.StateChange)
 		{
 #if 0			
 			if (tCalledModem.status.StateChange & HOOK_STATE_CHG)
-				tCalledModem.status.StateChange = tCalledModem.status.StateChange & ~HOOK_STATE_CHG;				//���ժ��״̬
+				tCalledModem.status.StateChange = tCalledModem.status.StateChange & ~HOOK_STATE_CHG;				//清空摘挂状态
 			if (tCalledModem.status.StateChange & BUFFER_SIZE_CHG)
-				tCalledModem.status.StateChange = tCalledModem.status.StateChange & ~BUFFER_SIZE_CHG;				//��ջ���仯״̬
+				tCalledModem.status.StateChange = tCalledModem.status.StateChange & ~BUFFER_SIZE_CHG;				//清空缓冲变化状态
 #endif
 			if (tCalledModem.status.StateChange & BUFFER_SIZE_CHG)
 				tCalledModem.status.StateChange &= ~BUFFER_SIZE_CHG;  
@@ -571,7 +572,6 @@ void Func1_Process_10msTimer(void)
 		}
 	}
 	
-
 	return;
 }
 
